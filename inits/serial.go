@@ -10,7 +10,7 @@ import (
 func Serial() error {
 	// Initialize device configuration
 	serialCfg := &serial.Config{
-		Name: config.Config.Device.Name,
+		Name: config.Config.Device.TTY,
 		Baud: config.Config.Device.Baud,
 	}
 

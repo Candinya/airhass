@@ -11,7 +11,7 @@ func readConfing() {
 }
 
 func main() {
-	inits.Hello()
+	inits.Logo()
 
 	// Initialize configuration
 	if err := inits.Config(); err != nil {
@@ -26,9 +26,17 @@ func main() {
 	// Switch logger
 	global.Logger.Debug("Logger initialized, switch to here.")
 
+	// Initialize MQTT server connection
+	if err := inits.MQTT(); err != nil {
+		global.Logger.Fatalf("Failed to initialize MQTT with error: %v", err)
+	}
+
+	// Prepare to clean MQTT when finish program
+	defer global.MQTT.Disconnect(100)
+
 	// Initialize serial port
 	if err := inits.Serial(); err != nil {
-		global.Logger.Fatalf("Failed to initialize serial port with error: %v", err)
+		global.Logger.Fatalf("Failed to initialize serial port device with error: %v", err)
 	}
 
 	// Prepare to clean serial port when finish program

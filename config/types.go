@@ -5,11 +5,17 @@ type cfg struct {
 		Debug bool `yaml:"debug"`
 	} `yaml:"system"`
 	Device struct {
-		Name       string `yaml:"name"`
+		TTY        string `yaml:"tty"`
 		Baud       int    `yaml:"baud"`
 		BufferSize int    `yaml:"bufSize"`
 	} `yaml:"device"`
-	Hass struct {
-		Address string `yaml:"address"`
-	} `yaml:"hass"`
+	MQTT struct {
+		DiscoveryPrefix string `yaml:"discoveryPrefix"`
+		TopicPrefix     string `yaml:"topicPrefix"`
+		ClientID        string `yaml:"clientId"`
+		Broker          string `yaml:"broker"`
+		Port            int    `yaml:"port"`
+		Username        string `yaml:"username"`
+		Password        string `yaml:"password"`
+	} `yaml:"mqtt"`
 }

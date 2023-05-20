@@ -1,0 +1,14 @@
+system:
+  debug: true
+device:
+  tty: "/dev/ttyCH341USB0"
+  baud: 57600 # Should not change this
+  bufSize: 256 # Should be enough
+mqtt:
+  discoveryPrefix: "homeassistant"
+  topicPrefix: "airhass"
+  clientId: "AirHass"
+  broker: "192.168.0.1"
+  port: 1883
+  username:
+  password:
