@@ -1,14 +1,50 @@
 system:
   debug: true
+
 device:
   tty: "/dev/ttyCH341USB0"
   baud: 57600 # Should not change this
   bufSize: 256 # Should be enough
-mqtt:
+
+hass:
   discoveryPrefix: "homeassistant"
   topicPrefix: "airhass"
-  clientId: "AirHass"
+  deviceName: "AirHass"
+
+mqtt:
   broker: "192.168.0.1"
   port: 1883
   username:
   password:
+
+sensors:
+  - id: "particulates03"
+    dataIndex: 0
+    name: "> 0.3μm 颗粒物"
+    unitOfMeasurement: "PCS/0.1L"
+    icon: "mdi:molecule"
+
+  - id: "pm25"
+    dataIndex: 1
+    name: "PM 2.5 浓度"
+    unitOfMeasurement: "μg/m³"
+    deviceClass: "pm25"
+
+  - id: "formaldehyde"
+    dataIndex: 2
+    name: "甲醛浓度"
+    unitOfMeasurement: "μg/m³"
+    icon: "mdi:bottle-tonic-skull"
+
+  - id: "carbon_dioxide"
+    dataIndex: 3
+    name: "CO₂ 浓度"
+    unitOfMeasurement: "ppm"
+    deviceClass: "carbon_dioxide"
+
+  - id: "voc"
+    dataIndex: 6
+    name: "VOC"
+    unitOfMeasurement: "ppb"
+    icon: "mdi:chemical-weapon"
+

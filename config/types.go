@@ -1,5 +1,7 @@
 package config
 
+import "airhass/types"
+
 type cfg struct {
 	System struct {
 		Debug bool `yaml:"debug"`
@@ -9,13 +11,16 @@ type cfg struct {
 		Baud       int    `yaml:"baud"`
 		BufferSize int    `yaml:"bufSize"`
 	} `yaml:"device"`
-	MQTT struct {
+	HASS struct {
 		DiscoveryPrefix string `yaml:"discoveryPrefix"`
 		TopicPrefix     string `yaml:"topicPrefix"`
-		ClientID        string `yaml:"clientId"`
-		Broker          string `yaml:"broker"`
-		Port            int    `yaml:"port"`
-		Username        string `yaml:"username"`
-		Password        string `yaml:"password"`
+		DeviceName      string `yaml:"deviceName"`
+	} `yaml:"hass"`
+	MQTT struct {
+		Broker   string `yaml:"broker"`
+		Port     int    `yaml:"port"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
 	} `yaml:"mqtt"`
+	Sensors []types.SensorDiscoveryConfig `yaml:"sensors"`
 }

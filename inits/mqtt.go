@@ -25,7 +25,7 @@ func MQTT() error {
 	// Initialize with config options
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s:%d", config.Config.MQTT.Broker, config.Config.MQTT.Port))
-	opts.SetClientID(config.Config.MQTT.ClientID)
+	opts.SetClientID(config.Config.HASS.DeviceName)
 	opts.SetUsername(config.Config.MQTT.Username)
 	opts.SetPassword(config.Config.MQTT.Password)
 	opts.SetDefaultPublishHandler(messagePubHandler)
@@ -42,7 +42,7 @@ func MQTT() error {
 	}
 
 	// Publish configurations
-	for _, sensor := range sensors.SensorsList {
+	for _, sensor := range config.Config.Sensors {
 		sensors.PublishState(&sensor)
 	}
 

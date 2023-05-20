@@ -1,8 +1,8 @@
 package jobs
 
 import (
+	"airhass/config"
 	"airhass/global"
-	"airhass/types"
 	"airhass/utils"
 	"encoding/json"
 	"strings"
@@ -12,19 +12,12 @@ func Process(csvStr string) {
 	// Separate by values
 	values := strings.Split(csvStr, ",")
 
-	// global.Logger.Debugf("> 0.3 μm 颗粒数:\t%s\t个/0.1L", values[0])
-	// global.Logger.Debugf("PM 2.5 浓度值:\t\t%s\tμg/m³", values[1])
-	// global.Logger.Debugf("甲醛浓度值:\t\t%s\tμg/m³", values[2])
-	// global.Logger.Debugf("CO₂ 浓度值:\t\t%s\tppm", values[3])
-	// global.Logger.Debugf("VOC:\t\t\t%s\tppb", values[6])
-
 	// Format state
-	state := types.State{
-		Particulates03: values[0],
-		PM25:           values[1],
-		Formaldehyde:   values[2],
-		CarbonDioxide:  values[3],
-		VOC:            values[6],
+	state := make(map[string]string)
+	for _, sensor := range config.Config.Sensors {
+		if sensor.DataIndex < len(values) {
+			state[sensor.ID] = values[sensor.DataIndex]
+		}
 	}
 
 	// Parse state into bytes

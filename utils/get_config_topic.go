@@ -6,5 +6,5 @@ import (
 )
 
 func GetConfigTopic(id string) string {
-	return fmt.Sprintf("%s/sensor/%s_%s/config", config.Config.MQTT.DiscoveryPrefix, config.Config.MQTT.ClientID, id)
+	return fmt.Sprintf("%s/sensor/%s_%s/config", config.Config.HASS.DiscoveryPrefix, config.Config.HASS.DeviceName, id)
 }
