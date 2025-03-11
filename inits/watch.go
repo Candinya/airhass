@@ -4,11 +4,26 @@ import (
 	"airhass/config"
 	"airhass/global"
 	"airhass/jobs"
+	"time"
 )
+
+var bufferedMsg string
 
 func Watch() error {
 
 	msgBuf := make([]byte, config.Config.Device.BufferSize)
+
+	// Delay process
+	go func() {
+		t := time.NewTicker(1 * time.Second)
+		for range t.C {
+			if bufferedMsg != "" {
+				global.Logger.Debug("Send to process:", bufferedMsg)
+				jobs.Process(bufferedMsg)
+				bufferedMsg = ""
+			}
+		}
+	}()
 
 	for {
 		msgLen, err := global.SerialPort.Read(msgBuf)
@@ -23,7 +38,8 @@ func Watch() error {
 
 		global.Logger.Debug(msg)
 
-		// Send to processor
+		bufferedMsg += msg
+
 		go jobs.Process(msg)
 	}
 
