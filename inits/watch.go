@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-var bufferedMsg string
-
 func Watch() error {
 
 	msgBuf := make([]byte, config.Config.Device.BufferSize)
+
+	var bufferedMsg string
 
 	// Delay process
 	go func() {
