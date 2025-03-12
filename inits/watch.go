@@ -4,29 +4,15 @@ import (
 	"airhass/config"
 	"airhass/global"
 	"airhass/jobs"
-	"time"
 )
 
 func Watch() error {
 
-	msgBuf := make([]byte, config.Config.Device.BufferSize)
-
-	var bufferedMsg string
-
-	// Delay process
-	go func() {
-		t := time.NewTicker(1 * time.Second)
-		for range t.C {
-			if bufferedMsg != "" {
-				global.Logger.Debug("Send to process:", bufferedMsg)
-				jobs.Process(bufferedMsg)
-				bufferedMsg = ""
-			}
-		}
-	}()
+	readBuf := make([]byte, config.Config.Device.BufferSize)
+	var sendBuf []byte
 
 	for {
-		msgLen, err := global.SerialPort.Read(msgBuf)
+		msgLen, err := global.SerialPort.Read(readBuf)
 		if err != nil {
 			global.Logger.Errorf("Failed to get data with error: %v", err)
 			return err
@@ -34,13 +20,33 @@ func Watch() error {
 
 		global.Logger.Debug("---------------------------------------")
 		global.Logger.Debugf("Serial data arrive (%d bytes):", msgLen)
-		msg := string(msgBuf[:msgLen])
+		msg := readBuf[:msgLen]
 
-		global.Logger.Debug(msg)
+		global.Logger.Debug(string(msg))
 
-		bufferedMsg += msg
+		sendBuf = append(sendBuf, msg...)
 
-		go jobs.Process(msg)
+		// Count if is complete
+		commaCount := 0
+		for _, c := range sendBuf {
+			if c == ',' {
+				commaCount++
+			}
+		}
+
+		if commaCount == config.Config.Device.CommaPerBatch {
+			global.Logger.Debugf("Message batch match (%d comma), process", commaCount)
+			global.Logger.Debug(string(sendBuf))
+			jobs.Process(string(sendBuf))
+			// Clear send buffer after batch finish
+			sendBuf = nil
+		} else if commaCount > config.Config.Device.CommaPerBatch {
+			global.Logger.Debugf("Message corrupted (%d comma), discard", commaCount)
+			global.Logger.Debug(string(sendBuf))
+			// Discard
+			sendBuf = nil
+		} // else message is incomplete, continue accumulating
+
 	}
 
 }

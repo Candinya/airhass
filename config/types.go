@@ -7,9 +7,10 @@ type cfg struct {
 		Debug bool `yaml:"debug"`
 	} `yaml:"system"`
 	Device struct {
-		TTY        string `yaml:"tty"`
-		Baud       int    `yaml:"baud"`
-		BufferSize int    `yaml:"bufSize"`
+		TTY           string `yaml:"tty"`
+		Baud          int    `yaml:"baud"`
+		BufferSize    int    `yaml:"bufSize"`
+		CommaPerBatch int    `yaml:"commaPerBatch"`
 	} `yaml:"device"`
 	HASS struct {
 		DiscoveryPrefix string `yaml:"discoveryPrefix"`
