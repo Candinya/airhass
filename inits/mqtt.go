@@ -5,6 +5,7 @@ import (
 	"airhass/global"
 	"airhass/sensors"
 	"fmt"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -19,6 +20,12 @@ var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
 	global.Logger.Debugf("Connect lost: %v", err)
+}
+
+func publishSensorsState() {
+	for _, sensor := range config.Config.Sensors {
+		sensors.PublishState(&sensor)
+	}
 }
 
 func MQTT() error {
@@ -42,9 +49,13 @@ func MQTT() error {
 	}
 
 	// Publish configurations
-	for _, sensor := range config.Config.Sensors {
-		sensors.PublishState(&sensor)
-	}
+	publishSensorsState()
+	go func() {
+		t := time.NewTicker(1 * time.Hour)
+		for range t.C {
+			publishSensorsState()
+		}
+	}()
 
 	return nil
 }
